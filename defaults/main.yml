@@ -1,2 +1,2 @@
 ---
-# defaults file for vector-role
+clickhouse_ip: "192.168.56.11"
