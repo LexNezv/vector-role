@@ -1,0 +1,20 @@
+---
+role_name_check: 1
+dependency:
+  name: galaxy
+  enabled: false
+lint: |
+  ansible-lint .
+driver:
+  name: docker
+platforms:
+  - name: test-01
+    image: ubuntu-molecule:latest
+    pre_build_image: true
+  - name: test-02
+    image: centos-molecule:latest
+    pre_build_image: true
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

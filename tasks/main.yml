@@ -1,14 +1,31 @@
 ---
-- name: Get vector distrib
+- name: Get vector distrib ubuntu
   ansible.builtin.get_url:
     url: https://packages.timber.io/vector/0.35.0/vector_0.35.0-1_amd64.deb
     dest: ./vector_0.35.0-1_amd64.deb
+    validate_certs: no
+  when: ansible_distribution == 'Ubuntu'
 
-- name: Install vector
+- name: Get vector distrib centos
+  ansible.builtin.get_url:
+    url: https://packages.timber.io/vector/0.35.0/vector-0.35.0-1.x86_64.rpm
+    dest: ./vector-0.35.0-1.x86_64.rpm
+    validate_certs: no
+  when: ansible_distribution == 'CentOS'
+
+- name: Install vector ubuntu
   become: true
   ansible.builtin.apt:
     deb: vector_0.35.0-1_amd64.deb
   ignore_errors: "{{ ansible_check_mode }}"
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Install vector centos
+  yum:
+     name: vector-0.35.0-1.x86_64.rpm
+     state: present
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: ansible_distribution == 'CentOS'
 
 - name: Install nginx for logs
   become: true
@@ -22,6 +39,10 @@
     src: templates/vector.yaml.j2
     dest: /etc/vector/vector.yaml
   notify: Restart vector service
+
+- name: Pause before create db
+  ansible.builtin.pause:
+    seconds: 6
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

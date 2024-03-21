@@ -1,0 +1,13 @@
+---
+# This is an example playbook to execute Ansible tests.
+- name: Verify
+  hosts: all
+  tasks:
+    - name: check settings
+      ansible.builtin.stat:
+        path: /etc/vector/vector.yaml
+      register: file_info
+
+    - name: Print file info
+      ansible.builtin.debug:
+        msg: "File exists: {{ file_info.stat.exists }}"
